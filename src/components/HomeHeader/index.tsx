@@ -5,10 +5,12 @@ import { Separator } from "../Separator"
 
 import { styles } from "./styles"
 import { colors } from "@/theme/colors"
-import { Summary } from "../Summary"
+import { Summary, SummaryProps } from "../Summary"
 
 export type HomeHeaderProps = {
     total: string
+    input: SummaryProps
+    output: SummaryProps
 }
 
 type Props = {
@@ -29,13 +31,13 @@ export function HomeHeader({ data }: Props) {
             <Separator color={colors.blue[400]} />
             <View style={styles.summary}>
                 <Summary
-                    data={{ label: "Entradas", value: "R$ 6.184,90"}}
+                    data={data.input}
                     icon={{ name: "arrow-upward", color: colors.green[500] }}
                 />
 
                 <Summary
                     isLeft
-                    data={{ label: "Saídas", value: "-R$ 849,65"}}
+                    data={data.output}
                     icon={{ name: "arrow-downward", color: colors.red[400] }}
                 />
             </View>
