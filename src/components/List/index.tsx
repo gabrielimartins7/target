@@ -28,7 +28,6 @@ export function List<T>({
     return (
         <View style={[styles.container, containerStyle]}>
             <Text style={styles.title}>{title}</Text>
-            {emptyMessage && <Text style={styles.empty}>{emptyMessage}</Text>}
 
             <FlatList
                 data={data}
