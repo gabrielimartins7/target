@@ -4,7 +4,7 @@ import { colors, fontFamily } from "@/theme"
 export const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
-        height: 72,
+        paddingVertical: 16,
         alignItems: "center",
         gap: 7
     },

@@ -4,14 +4,14 @@ import { MaterialIcons } from "@expo/vector-icons"
 import { styles } from "./styles"
 import { colors } from "@/theme"
 
-import { TransactionsType } from "@/utils/TransactionsType"
+import { TransactionsTypes } from "@/utils/TransactionsType"
 
 export type TransactionProps = {
     id: string
     value: string
     date: string
     description?: string
-    type: TransactionsType
+    type: TransactionsTypes
 }
 
 type Props = {
@@ -23,13 +23,13 @@ export function Transaction({ data, onRemove }: Props) {
     return (
         <View style={styles.container}>
             <MaterialIcons name={
-                    data.type === TransactionsType.Input
+                    data.type === TransactionsTypes.Input
                     ? "arrow-upward"
                     : "arrow-downward"
                 }
                 size={20}
                 color={
-                    data.type === TransactionsType.Input
+                    data.type === TransactionsTypes.Input
                     ? colors.blue[500]
                     : colors.red[400]
                 }

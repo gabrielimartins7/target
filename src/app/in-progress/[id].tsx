@@ -6,7 +6,7 @@ import { Progress } from "@/components/Progress";
 import { List } from "@/components/List";
 import { Transaction,TransactionProps } from "@/components/Transaction";
 
-import { TransactionsType } from "@/utils/TransactionsType";
+import { TransactionsTypes } from "@/utils/TransactionsType";
 import { Button } from "@/components/Button";
 
 const details = {
@@ -21,14 +21,14 @@ const transactions: TransactionProps[] = [
         value: "R$ 580,00",
         date: "20/06/2024",
         description: "Compra na Apple Store",
-        type: TransactionsType.Input
+        type: TransactionsTypes.Input
     },
     {
         id: "2",
         value: "R$ 380,00",
         date: "20/06/2024",
         description: "Compra na Apple Store",
-        type: TransactionsType.Output
+        type: TransactionsTypes.Output
     },
 ]
 
@@ -54,7 +54,10 @@ export default function InProgress() {
                     )}
                     emptyMessage="Nenhuma transação. Click em nova transação para guardar seu primeiro dinheiro aqui."
                 />
-                <Button title="Nova transação" onPress={() => router.navigate(`/transaction/${params.id}`)} />
+                <Button
+                    title="Nova transação"
+                    onPress={() => router.navigate(`/transaction/${params.id}`)}
+                />
             </View>
         )
 }
