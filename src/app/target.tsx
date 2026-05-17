@@ -7,12 +7,15 @@ import { Input } from "@/components/Input";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Button } from "@/components/Button";
 
+import { useTargetDatabase } from "@/database/useTargetDatabase";
+
 export default function Target() {
     const [isProcessing, setIsProcessing] = useState(false)
     const [name, setName] = useState("")
     const [amount, setAmount] = useState(0)
 
     const params = useLocalSearchParams<{ id?: string }>()
+    const targetDatabase = useTargetDatabase()
 
     function handleSaveTarget() {
         if (!name.trim() || amount <= 0) {
@@ -30,6 +33,8 @@ export default function Target() {
 
     async function createTarget() {
         try {
+            await targetDatabase.create({ name, amount })
+            
             Alert.alert("Sucesso", "Meta criada com sucesso!", [
                 {
                     text: "Ok",
