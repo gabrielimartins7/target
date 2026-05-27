@@ -5,6 +5,10 @@ export type TargetCreate = {
     amount: number
 }
 
+export type TargetUpdate = TargetCreate & {
+    id: number
+}
+
 export type TargetResponse = {
     id: number
     name: string
@@ -47,8 +51,42 @@ export function useTargetDatabase() {
         `)
     }
 
+    function show(id: number) {
+        return database.getFirstAsync<TargetResponse>(`
+            SELECT
+                targets.id,
+                targets.name,
+                targets.amount,
+                COALESCE (SUM(transactions.amount), 0) AS current,
+                COALESCE (SUM(transactions.amount) / targets.amount
+                * 100, 0) AS percentage,
+                targets.created_at,
+                targets.updated_at
+            FROM targets
+            LEFT JOIN transactions ON targets.id = transactions.target_id
+            WHERE targets.id = ${id}
+        `)
+    }
+
+    async function update(data: TargetUpdate) {
+        const statement = await database.prepareAsync(`
+            UPDATE targets SET
+                name = $name,
+                amount = $amount,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $id`)
+
+            statement.executeAsync({
+                $id: data.id,
+                $name: data.name,
+                $amount: data.amount,
+            })
+    }
+
     return {
+        show,
         create,
+        update,
         listBySavedValue,
     }
 }

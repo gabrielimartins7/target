@@ -1,19 +1,19 @@
-import { View } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
+import { useCallback, useState } from "react";
+import { Alert, View } from "react-native";
+import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 
+import { Button } from "@/components/Button";
+import { List } from "@/components/List";
+import { Loading } from "@/components/Loading";
 import { PageHeader } from "@/components/PageHeader";
 import { Progress } from "@/components/Progress";
-import { List } from "@/components/List";
 import { Transaction,TransactionProps } from "@/components/Transaction";
 
-import { TransactionsTypes } from "@/utils/TransactionsType";
-import { Button } from "@/components/Button";
+import { useTargetDatabase } from "@/database/useTargetDatabase";
 
-const details = {
-    currency: "R$ 580,00",
-    target: "R$ 1.790,00",
-    percentage: 25
-}
+import { TransactionsTypes } from "@/utils/TransactionsType";
+import { numberToCurrency } from "@/utils/numberToCurrency";
+
 
 const transactions: TransactionProps[] = [
     {
@@ -33,12 +33,59 @@ const transactions: TransactionProps[] = [
 ]
 
 export default function InProgress() {
+    const [isFetching, setIsFetching] = useState(true)
+    const [details, setDetails] = useState({
+        name: "",
+        currency: "R$ 0,00",
+        target: "R$ 0,00",
+        percentage: 0,
+    })
     const params = useLocalSearchParams<{id: string}>()
+
+    const targetDatabase = useTargetDatabase()
+
+    async function fetchDetails() {
+        try {
+            const response = await targetDatabase.show(Number(params.id))
+
+            if (!response) {
+                Alert.alert("Erro", "Não foi possível carregar os detalhes da meta.")
+                return
+            }
+
+            setDetails({
+                name: response.name,
+                currency: numberToCurrency(response.current),
+                target: numberToCurrency(response.amount),
+                percentage: response.percentage
+            })
+        } catch (error) {
+            Alert.alert("Erro", "Não foi possível carregar os detalhes da meta.")
+            console.log(error)
+        }
+    }
+
+    async function fetchData() {
+        const fetchDetailsPromise = fetchDetails()
+
+        await Promise.all([fetchDetailsPromise])
+        setIsFetching(false)
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchData()
+        }, [])
+    )
+
+    if(isFetching) {
+        return <Loading />
+    }
 
     return (
             <View style={{ flex: 1, padding: 24, gap: 32 }}>
                 <PageHeader
-                    title="Apple Watch"
+                    title={details.name}
                     rightButton={{
                         icon: "edit",
                         onPress: () => {}
