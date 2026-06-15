@@ -67,6 +67,12 @@ export default function Target() {
     async function fetchDetails(id: number) {
         try {
             const response = await targetDatabase.show(id)
+
+            if (!response) {
+                Alert.alert("Erro", "Meta não encontrada.")
+                return
+            }
+
             setName(response.name)
             setAmount(response.amount)
         } catch (error) {
